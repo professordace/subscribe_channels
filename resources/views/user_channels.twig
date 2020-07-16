@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Hello {{ user.name }}</title>
+    <script>window.Laravel = {{ {'csrfToken': csrf_token()}|json_encode()|raw }}</script>
+</head>
+<body>
+
+<h1>Hello {{ user.name }}</h1>
+{{ update }}
+<h3>Доступные для подписки каналы:</h3>
+
+<form action="/channels" method="post">
+    {{ csrf_field() }}
+    <ul>
+        {% for channel in channels %}
+            <li><input type="checkbox" name="channels[]"
+                       value="{{ channel.id }}" {% for userchannel in user.channels if userchannel.id == channel.id %} checked {% endfor %}/>{{ channel.code }}
+            </li>
+        {% endfor %}
+    </ul>
+    <button type="submit">Сохранить</button>
+</form>
+{% if session_get('success') %} <span class="message message_success">{{ session_get('success') }}</span> {% endif %}
+{% if errors.any() %}
+    {% for error in errors.all() %}
+        <span class="message message_failed">{{ error }}</span>
+    {% endfor %}
+{% endif %}
+</body>
+
+<style>
+    .message {
+        display: block;
+        margin-top: 20px;
+    }
+
+    .message_success {
+        color: #3c763d;
+    }
+
+    .message_failed {
+        color: #a94442;
+    }
+</style>
+</html>
